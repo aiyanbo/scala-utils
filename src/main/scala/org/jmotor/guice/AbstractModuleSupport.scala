@@ -27,4 +27,8 @@ abstract class AbstractModuleSupport extends AbstractModule {
     }
   }
 
+  def loadClasses(packageName: String): Set[Class[_]] = {
+    CLASS_PATH.getTopLevelClasses(packageName).asScala.map(_.load()).toSet
+  }
+
 }
