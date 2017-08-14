@@ -1,11 +1,14 @@
+import com.typesafe.sbt.SbtPgp.autoImportImpl.useGpg
 import sbt.Keys._
 import sbt.{AutoPlugin, Credentials, Path, PluginTrigger, _}
+
 
 object Publishing extends AutoPlugin {
 
   override def trigger: PluginTrigger = allRequirements
 
   override def projectSettings: Seq[_root_.sbt.Def.Setting[_]] = Seq(
+    useGpg := false,
     publishMavenStyle := true,
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
     publishTo := {
