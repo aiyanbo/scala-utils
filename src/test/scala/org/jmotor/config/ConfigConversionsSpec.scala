@@ -17,6 +17,8 @@ class ConfigConversionsSpec extends FunSuite {
     s"""
        |name = "Andy Ai"
        |age = 18
+       |valid = true
+       |nums = [1,2,3,4]
      """.stripMargin
   )
 
@@ -25,6 +27,17 @@ class ConfigConversionsSpec extends FunSuite {
     assert(addressOpt.isEmpty)
     val ageOpt = config.getIntOpt("age")
     assert(ageOpt.contains(18))
+  }
+
+  test("Get boolean opt") {
+    val boolOpt = config.getBooleanOpt("invalid")
+    assert(boolOpt.isEmpty)
+    assert(config.getBooleanOpt("valid").contains(true))
+  }
+
+  test("Get int seq opt") {
+    assert(config.getIntSeqOpt("nums2").isEmpty)
+    assert(config.getIntSeqOpt("nums").exists(_.forall(_ < 5)))
   }
 
 }
