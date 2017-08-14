@@ -10,20 +10,18 @@ object Dependencies extends AutoPlugin{
   override def projectSettings: Seq[Def.Setting[_]] = Seq(libraryDependencies := dependencies)
 
   object Versions {
-    val guava = "21.0"
+    val guava = "23.0"
     val guice = "4.1.0"
     val config = "1.3.1"
-    val scala211 = "2.11.8"
-    val scala212 = "2.12.1"
-    val scalaTest = "3.0.1"
-    val scalaLogging = "3.5.0"
+    val scala212 = "2.12.3"
+    val scalaTest = "3.0.3"
+    val scala211 = "2.11.11"
   }
 
   object Compile {
     val config: ModuleID = "com.typesafe" % "config" % Versions.config
     val guava: ModuleID = "com.google.guava" % "guava" % Versions.guava
-    val scalaLogging: ModuleID = "com.typesafe.scala-logging" %% "scala-logging" % Versions.scalaLogging
-    val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice % "provided" exclude("com.google.guava", "guava")
+    val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice exclude("com.google.guava", "guava")
   }
 
   object Test {
@@ -32,6 +30,6 @@ object Dependencies extends AutoPlugin{
 
   import Compile._
 
-  lazy val dependencies = Seq(config, guava,guice, scalaLogging, Test.scalaTest)
+  lazy val dependencies: Seq[ModuleID] = Seq(config, guava,guice).map(_ % "provided") :+ Test.scalaTest
 
 }
