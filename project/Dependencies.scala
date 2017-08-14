@@ -1,7 +1,7 @@
 import sbt.Keys.libraryDependencies
 import sbt.{Def, _}
 
-object Dependencies extends AutoPlugin{
+object Dependencies extends AutoPlugin {
 
 
   override def trigger: PluginTrigger = allRequirements
@@ -30,6 +30,6 @@ object Dependencies extends AutoPlugin{
 
   import Compile._
 
-  lazy val dependencies: Seq[ModuleID] = Seq(config, guava,guice).map(_ % "provided") :+ Test.scalaTest
+  lazy val dependencies: Seq[ModuleID] = Seq(config, guava, guice).map(_ % "provided") :+ Test.scalaTest
 
 }
