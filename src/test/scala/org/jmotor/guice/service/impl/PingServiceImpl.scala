@@ -1,6 +1,6 @@
 package org.jmotor.guice.service.impl
 
-import org.jmotor.guice.service.Service
+import org.jmotor.guice.service.PingService
 
 /**
  * Component:
@@ -9,7 +9,7 @@ import org.jmotor.guice.service.Service
  *
  * @author AI
  */
-class ServiceImpl extends Service {
+class PingServiceImpl extends PingService {
 
   override def ping(): String = "pong"
 

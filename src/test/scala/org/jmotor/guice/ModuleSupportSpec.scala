@@ -1,7 +1,7 @@
 package org.jmotor.guice
 
-import com.google.inject.{Guice, Injector}
-import org.jmotor.guice.service.Service
+import com.google.inject.{ Guice, Injector }
+import org.jmotor.guice.service.PingService
 import org.scalatest.FunSuite
 
 /**
@@ -17,7 +17,7 @@ class ModuleSupportSpec extends FunSuite {
     val injector = Guice.createInjector(new AbstractModuleSupport {
       override def configure(): Unit = bindComponents("org.jmotor.guice.service.impl")
     })
-    val service = injector.getInstance(classOf[Service])
+    val service = injector.getInstance(classOf[PingService])
     assert(service.ping() == "pong")
   }
 

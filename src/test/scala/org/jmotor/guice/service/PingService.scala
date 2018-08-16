@@ -7,7 +7,7 @@ package org.jmotor.guice.service
  *
  * @author AI
  */
-trait Service {
+trait PingService {
 
   def ping(): String
 

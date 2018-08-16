@@ -1,7 +1,6 @@
 import com.typesafe.sbt.SbtPgp.autoImportImpl.useGpg
 import sbt.Keys._
-import sbt.{AutoPlugin, Credentials, Path, PluginTrigger, _}
-
+import sbt.{ AutoPlugin, Credentials, Path, PluginTrigger, _ }
 
 object Publishing extends AutoPlugin {
 
@@ -15,30 +14,28 @@ object Publishing extends AutoPlugin {
       val nexus = "https://oss.sonatype.org/"
       if (isSnapshot.value) {
         Some("snapshots" at nexus + "content/repositories/snapshots")
-      }
-      else {
+      } else {
         Some("releases" at nexus + "service/local/staging/deploy/maven2")
       }
     },
     pomExtra :=
       <url>https://github.com/aiyanbo/scala-utils</url>
-        <licenses>
-          <license>
-            <name>Apache License</name>
-            <url>http://www.apache.org/licenses/</url>
-            <distribution>repo</distribution>
-          </license>
-        </licenses>
-        <scm>
-          <url>git@github.com:aiyanbo/scala-utils.git</url>
-          <connection>scm:git:git@github.com:aiyanbo/scala-utils.git</connection>
-        </scm>
-        <developers>
-          <developer>
-            <id>yanbo.ai</id>
-            <name>Andy Ai</name>
-            <url>http://aiyanbo.github.io/</url>
-          </developer>
-        </developers>
-  )
+      <licenses>
+        <license>
+          <name>Apache License</name>
+          <url>http://www.apache.org/licenses/</url>
+          <distribution>repo</distribution>
+        </license>
+      </licenses>
+      <scm>
+        <url>git@github.com:aiyanbo/scala-utils.git</url>
+        <connection>scm:git:git@github.com:aiyanbo/scala-utils.git</connection>
+      </scm>
+      <developers>
+        <developer>
+          <id>yanbo.ai</id>
+          <name>Andy Ai</name>
+          <url>http://aiyanbo.github.io/</url>
+        </developer>
+      </developers>)
 }

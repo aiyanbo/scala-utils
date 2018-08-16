@@ -3,9 +3,9 @@ package org.jmotor.config
 import com.typesafe.config.Config
 
 import scala.collection.JavaConverters._
-import scala.concurrent.duration.{Duration, _}
+import scala.concurrent.duration.{ Duration, _ }
 import scala.language.implicitConversions
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 /**
  * Component:

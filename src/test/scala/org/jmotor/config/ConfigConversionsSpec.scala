@@ -19,8 +19,7 @@ class ConfigConversionsSpec extends FunSuite {
        |age = 18
        |valid = true
        |nums = [1,2,3,4]
-     """.stripMargin
-  )
+     """.stripMargin)
 
   test("Get long configs") {
     val addressOpt = config.getStringOpt("address")

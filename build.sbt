@@ -1,9 +1,29 @@
-name := "scala-utils"
+import ReleaseTransformations._
 
-version := "1.0.2"
+name := "scala-utils"
 
 organization := "org.jmotor"
 
+enablePlugins(Dependencies, Publishing)
+
 scalaVersion := Dependencies.Versions.scala212
 
-enablePlugins(Dependencies, Compiling, Formatting, Publishing)
+dependencyUpgradeModuleNames := Map (
+  "scala-library" -> "scala"
+)
+
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  publishArtifacts,
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
+)

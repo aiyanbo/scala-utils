@@ -1,7 +1,10 @@
 package org.jmotor.guice
 
+import java.util.Objects
+
 import com.google.common.reflect.ClassPath
 import com.google.inject.AbstractModule
+
 import scala.collection.JavaConverters._
 
 /**
@@ -19,9 +22,10 @@ abstract class AbstractModuleSupport extends AbstractModule {
     CLASS_PATH.getTopLevelClasses(packageName).asScala.foreach { classInfo ⇒
       val clazz = classInfo.load()
       val interfaces = clazz.getInterfaces
-      val interfaceOpt = interfaces.find(irfe ⇒
-        clazz.getSimpleName.contains(irfe.getSimpleName) && clazz.getPackage.getName.contains(irfe.getPackage.getName))
-      if (null != interfaces && interfaces.nonEmpty && interfaceOpt.isDefined) {
+      val interfaceOpt = interfaces.find { irfe ⇒
+        clazz.getSimpleName.contains(irfe.getSimpleName) && clazz.getPackage.getName.contains(irfe.getPackage.getName)
+      }
+      if (Objects.nonNull(interfaces) && interfaces.nonEmpty && interfaceOpt.isDefined) {
         bind(interfaceOpt.get.asInstanceOf[Class[Any]]).to(clazz.asInstanceOf[Class[Any]])
       }
     }
