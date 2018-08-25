@@ -14,7 +14,6 @@ object Dependencies extends AutoPlugin {
     val log4j2 = "2.11.1"
     val scalatest = "3.0.5"
     val scala212 = "2.12.6"
-    val scala211 = "2.11.11"
     val scalikeJdbc = "3.2.3"
     val undertow = "2.0.6.Final"
   }
