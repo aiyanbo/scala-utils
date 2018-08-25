@@ -14,8 +14,6 @@ dependencyUpgradeModuleNames := Map(
   "undertow-.*" -> "undertow"
 )
 
-releaseCrossBuild := true
-
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 releaseProcess := Seq[ReleaseStep](
