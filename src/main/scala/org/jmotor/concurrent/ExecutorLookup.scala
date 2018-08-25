@@ -13,7 +13,7 @@ import com.typesafe.config.Config
  *
  * @author AI
  */
-object ExecutionContext {
+object ExecutorLookup {
 
   private[this] var _config: Config = _
 
@@ -21,7 +21,7 @@ object ExecutionContext {
 
   def config(): Config = {
     if (Objects.isNull(_config)) {
-      throw new IllegalStateException("Using ExecutionContext.setup(config) to init")
+      throw new IllegalStateException("Using org.jmotor.concurrent.ExecutorLookup.setup(config) to init")
     }
     _config
   }

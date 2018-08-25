@@ -1,7 +1,10 @@
 package org.jmotor.http
 
+import java.nio.file.Paths
+
 import com.google.common.reflect.{ ClassPath, TypeToken }
 import com.google.inject.Injector
+
 import scala.collection.JavaConverters._
 
 /**
@@ -28,6 +31,14 @@ object Routes {
       }
       constructor.newInstance(parameters: _*).asInstanceOf[RoutingHandler]
     }.toSet
+  }
+
+  def getRegexRoutes(handlers: Set[RoutingHandler], versioning: Option[String] = None): Set[String] = {
+    handlers.map { routing ⇒
+      val pattern = routing.pattern.getOrElse(routing.route)
+      val router = versioning.fold(pattern)(version ⇒ Paths.get("/", version, pattern).toString)
+      router.replaceAll("\\{\\w+\\}", """(\\\\w+)""")
+    }
   }
 
 }

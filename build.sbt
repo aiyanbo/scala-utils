@@ -8,8 +8,10 @@ enablePlugins(Dependencies, Publishing)
 
 scalaVersion := Dependencies.Versions.scala212
 
-dependencyUpgradeModuleNames := Map (
-  "scala-library" -> "scala"
+dependencyUpgradeModuleNames := Map(
+  "log4j-.*" -> "log4j",
+  "scala-library" -> "scala",
+  "undertow-.*" -> "undertow"
 )
 
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
