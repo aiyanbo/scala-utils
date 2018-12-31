@@ -9,6 +9,10 @@ package org.jmotor.utils
  */
 object Strings {
 
+  def toOption(str: String): Option[String] = {
+    if (str.trim.isEmpty) None else Option(str)
+  }
+
   def avoidBlank(stringOpt: Option[String]): Option[String] = {
     stringOpt.flatMap(s ⇒ if (s.trim.isEmpty) None else stringOpt)
   }
