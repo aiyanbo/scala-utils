@@ -19,6 +19,10 @@ object Constraints {
 
   val NotEmpty = "not_empty"
 
+  val MinLength = "min_length"
+
+  val MaxLength = "max_length"
+
   def notBlank(field: String, value: String): Unit = {
     check(ConstraintViolation(field, NotBlank)) {
       assert(Strings.toOption(value).isDefined)
@@ -42,6 +46,30 @@ object Constraints {
       values.foreach { value ⇒
         assert(matches.contains(value))
       }
+    }
+  }
+
+  def minLength(field: String, value: String, length: Int): Unit = {
+    check(ConstraintViolation(field, MinLength)) {
+      assert(value.length >= length)
+    }
+  }
+
+  def minLength(field: String, values: Traversable[_], length: Int): Unit = {
+    check(ConstraintViolation(field, MinLength)) {
+      assert(values.size >= length)
+    }
+  }
+
+  def maxLength(field: String, value: String, length: Int): Unit = {
+    check(ConstraintViolation(field, MaxLength)) {
+      assert(value.length <= length)
+    }
+  }
+
+  def maxLength(field: String, values: Traversable[_], length: Int): Unit = {
+    check(ConstraintViolation(field, MaxLength)) {
+      assert(values.size <= length)
     }
   }
 
