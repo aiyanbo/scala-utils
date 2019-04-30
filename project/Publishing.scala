@@ -9,7 +9,7 @@ object Publishing extends AutoPlugin {
   override def projectSettings: Seq[_root_.sbt.Def.Setting[_]] = Seq(
     useGpg := false,
     publishMavenStyle := true,
-    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+    credentials += Credentials(Path.userHome / ".sbt" / ".credentials"),
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
       if (isSnapshot.value) {
