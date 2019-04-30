@@ -50,25 +50,25 @@ object Constraints {
   }
 
   def minLength(field: String, value: String, length: Int): Unit = {
-    check(ConstraintViolation(field, MinLength)) {
+    check(ConstraintViolation(field, MinLength, length)) {
       assert(value.length >= length)
     }
   }
 
   def minLength(field: String, values: Traversable[_], length: Int): Unit = {
-    check(ConstraintViolation(field, MinLength)) {
+    check(ConstraintViolation(field, MinLength, length)) {
       assert(values.size >= length)
     }
   }
 
   def maxLength(field: String, value: String, length: Int): Unit = {
-    check(ConstraintViolation(field, MaxLength)) {
+    check(ConstraintViolation(field, MaxLength, length)) {
       assert(value.length <= length)
     }
   }
 
   def maxLength(field: String, values: Traversable[_], length: Int): Unit = {
-    check(ConstraintViolation(field, MaxLength)) {
+    check(ConstraintViolation(field, MaxLength, length)) {
       assert(values.size <= length)
     }
   }

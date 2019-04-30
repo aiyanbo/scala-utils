@@ -19,16 +19,18 @@ import scala.runtime.BoxedUnit
  *
  * @author AI
  */
-trait RestfulHandler extends HttpHandler with Executable with Logging { self ⇒
+trait RestfulHandler extends HttpHandler with Executable with Logging {
 
   private[this] lazy val contentType = "application/json;charset=utf-8"
   private[this] implicit lazy val ec: ExecutionContext = ExecutionContext.fromExecutor(workers)
   protected lazy val workers: Executor = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
 
+  protected val exceptionHandler: ExceptionHandler
+
   override def handleRequest(exchange: HttpServerExchange): Unit = {
     exchange.dispatch(workers, () ⇒ {
       lazy val exceptionCaught = (t: Throwable) ⇒ {
-        exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR)
+        exceptionHandler.handleException(exchange, t)
         exchange.endExchange()
         logger.error(t.getLocalizedMessage, t)
       }
@@ -39,12 +41,12 @@ trait RestfulHandler extends HttpHandler with Executable with Logging { self ⇒
             exchange.endExchange()
           case true ⇒
             executeSafely({
-              val (status, future) = exchange.getRequestMethod match {
-                case GET    ⇒ StatusCodes.OK -> get(exchange)
-                case PUT    ⇒ StatusCodes.OK -> put(exchange)
-                case POST   ⇒ StatusCodes.CREATED -> post(exchange)
-                case PATCH  ⇒ StatusCodes.NO_CONTENT -> patch(exchange)
-                case DELETE ⇒ StatusCodes.NO_CONTENT -> delete(exchange)
+              val future = exchange.getRequestMethod match {
+                case GET    ⇒ get(exchange)
+                case PUT    ⇒ put(exchange)
+                case POST   ⇒ post(exchange)
+                case PATCH  ⇒ patch(exchange)
+                case DELETE ⇒ delete(exchange)
               }
               future.map {
                 case Unit | _: BoxedUnit ⇒
@@ -52,7 +54,7 @@ trait RestfulHandler extends HttpHandler with Executable with Logging { self ⇒
                   exchange.endExchange()
                 case result ⇒
                   exchange.getResponseHeaders.put(Headers.CONTENT_TYPE, contentType)
-                  exchange.setStatusCode(status)
+                  exchange.setStatusCode(getResponseStatusCode(exchange))
                   exchange.getResponseSender.send(ByteBuffer.wrap(writeAsBytes(result)))
               }
             }, exceptionCaught)
@@ -61,6 +63,16 @@ trait RestfulHandler extends HttpHandler with Executable with Logging { self ⇒
   }
 
   def writeAsBytes(result: Any): Array[Byte]
+
+  def getResponseStatusCode(exchange: HttpServerExchange): Int = {
+    exchange.getRequestMethod match {
+      case GET    ⇒ StatusCodes.OK
+      case PUT    ⇒ StatusCodes.OK
+      case POST   ⇒ StatusCodes.CREATED
+      case PATCH  ⇒ StatusCodes.NO_CONTENT
+      case DELETE ⇒ StatusCodes.NO_CONTENT
+    }
+  }
 
   def authenticate(exchange: HttpServerExchange): Future[Boolean] = Future.successful(true)
 
