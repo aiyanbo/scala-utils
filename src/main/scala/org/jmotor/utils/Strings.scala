@@ -10,7 +10,7 @@ package org.jmotor.utils
 object Strings {
 
   def toOption(str: String): Option[String] = {
-    if (str.trim.isEmpty) None else Option(str)
+    if (java.util.Objects.isNull(str) || str.trim.isEmpty) None else Option(str)
   }
 
   def avoidBlank(stringOpt: Option[String]): Option[String] = {
