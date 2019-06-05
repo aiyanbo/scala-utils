@@ -23,3 +23,5 @@ trait Executable {
   }
 
 }
+
+object Executable extends Executable

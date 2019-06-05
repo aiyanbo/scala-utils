@@ -31,7 +31,7 @@ class RoutesSpec extends FunSuite {
     val handlers = Routes.getRoutingHandlers(injector, "org.jmotor.http.router")
     val routes = Routes.getRegexRoutes(handlers)
 
-    assert(routes.contains("""/users/(\\w+)"""))
+    assert(routes.contains("""/users/([\\w|-]+)"""))
     assert(routes.contains("""/permissions/.*"""))
 
   }

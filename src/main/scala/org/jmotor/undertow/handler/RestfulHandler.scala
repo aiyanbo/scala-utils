@@ -37,7 +37,11 @@ trait RestfulHandler extends HttpHandler with Executable with Logging {
       executeSafely(
         authenticate(exchange).map {
           case false ⇒
-            exchange.setStatusCode(StatusCodes.UNAUTHORIZED)
+            val (status, bytes) = authenticateFailureResponse(exchange)
+            exchange.setStatusCode(status)
+            if (bytes.nonEmpty) {
+              exchange.getResponseSender.send(ByteBuffer.wrap(bytes))
+            }
             exchange.endExchange()
           case true ⇒
             executeSafely({
@@ -72,6 +76,10 @@ trait RestfulHandler extends HttpHandler with Executable with Logging {
       case PATCH  ⇒ StatusCodes.NO_CONTENT
       case DELETE ⇒ StatusCodes.NO_CONTENT
     }
+  }
+
+  def authenticateFailureResponse(exchange: HttpServerExchange): (Int, Array[Byte]) = {
+    StatusCodes.FORBIDDEN -> Array.emptyByteArray
   }
 
   def authenticate(exchange: HttpServerExchange): Future[Boolean] = Future.successful(true)
