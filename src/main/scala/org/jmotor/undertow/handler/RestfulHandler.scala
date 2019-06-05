@@ -40,6 +40,7 @@ trait RestfulHandler extends HttpHandler with Executable with Logging {
             val (status, bytes) = authenticateFailureResponse(exchange)
             exchange.setStatusCode(status)
             if (bytes.nonEmpty) {
+              exchange.getResponseHeaders.put(Headers.CONTENT_TYPE, contentType)
               exchange.getResponseSender.send(ByteBuffer.wrap(bytes))
             }
             exchange.endExchange()
