@@ -8,15 +8,16 @@ object Dependencies extends AutoPlugin {
   override def projectSettings: Seq[Def.Setting[_]] = Seq(libraryDependencies ++= dependencies)
 
   object Versions {
+    val config = "1.3.4"
+    val grpcCore = "1.21.0"
     val guava = "23.0"
     val guice = "4.2.2"
-    val config = "1.3.3"
-    val log4j2 = "2.11.1"
-    val grpcCore = "1.17.1"
-    val scala212 = "2.12.6"
-    val scalatest = "3.0.5"
-    val scalikejdbc = "3.3.2"
-    val undertow = "2.0.16.Final"
+    val scala212 = "2.12.8"
+    val scala213 = "2.13.0"
+    val scalaLogging = "3.9.2"
+    val scalatest = "3.0.8"
+    val scalikejdbc = "3.3.5"
+    val undertow = "2.0.22.Final"
   }
 
   object Compiles {
@@ -24,10 +25,8 @@ object Dependencies extends AutoPlugin {
     val config: ModuleID = "com.typesafe" % "config" % Versions.config
     val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice
     val undertow: ModuleID = "io.undertow" % "undertow-core" % Versions.undertow
-    val log4j2: Seq[ModuleID] = Seq(
-      "org.apache.logging.log4j" %% "log4j-api-scala" % "11.0",
-      "org.apache.logging.log4j" % "log4j-api" % Versions.log4j2)
     val scalikeJdbc: ModuleID = "org.scalikejdbc" %% "scalikejdbc" % Versions.scalikejdbc
+    val logging: ModuleID = "com.typesafe.scala-logging" %% "scala-logging" % Versions.scalaLogging
   }
 
   object Tests {
@@ -36,7 +35,7 @@ object Dependencies extends AutoPlugin {
 
   import Compiles._
 
-  lazy val dependencies: Seq[ModuleID] = (log4j2 ++ Seq(
-    config, guice, grpc, undertow, scalikeJdbc)).map(_ % Provided) :+ Tests.scalaTest
+  lazy val dependencies: Seq[ModuleID] = Seq(
+    logging, config, guice, grpc, undertow, scalikeJdbc).map(_ % Provided) :+ Tests.scalaTest
 
 }

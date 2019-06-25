@@ -1,4 +1,6 @@
-import ReleaseTransformations._
+import Dependencies.Versions
+import org.jmotor.sbt.plugin.ComponentSorter
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 name := "scala-utils"
 
@@ -6,13 +8,16 @@ organization := "org.jmotor"
 
 enablePlugins(Dependencies, Publishing)
 
-scalaVersion := Dependencies.Versions.scala212
+scalaVersion := Versions.scala213
+
+crossScalaVersions := Seq(Versions.scala212, Versions.scala213)
 
 dependencyUpgradeModuleNames := Map(
-  "log4j-.*" -> "log4j",
   "scala-library" -> "scala",
   "undertow-.*" -> "undertow"
 )
+
+dependencyUpgradeComponentSorter := ComponentSorter.ByAlphabetically
 
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 

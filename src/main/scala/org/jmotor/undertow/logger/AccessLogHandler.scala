@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter
 import java.util.{ Objects, UUID }
 
 import com.google.common.net.HttpHeaders
+import com.typesafe.scalalogging.Logger
 import io.undertow.server.{ ExchangeCompletionListener, HttpHandler, HttpServerExchange }
 import io.undertow.util.HeaderValues
-import org.apache.logging.log4j.{ LogManager, Logger }
 
 /**
  * Component:
@@ -18,14 +18,12 @@ import org.apache.logging.log4j.{ LogManager, Logger }
  */
 class AccessLogHandler(next: HttpHandler, service: Option[String] = None) extends HttpHandler {
 
-  private[this] val logger: Logger = LogManager.getLogger("access")
+  private[this] val logger: Logger = Logger("access")
   private[this] val listener: ExchangeCompletionListener =
     (exchange: HttpServerExchange, nextListener: ExchangeCompletionListener.NextListener) ⇒ {
       try {
         val requestId = getRequestId(exchange)
-        if (logger.isInfoEnabled) {
-          logger.info(accessLogMessage(requestId, exchange))
-        }
+        logger.info(accessLogMessage(requestId, exchange))
       } finally {
         nextListener.proceed()
       }

@@ -3,10 +3,11 @@ package org.jmotor.undertow.handler
 import java.nio.ByteBuffer
 import java.util.concurrent.{ Executor, Executors }
 
+import com.typesafe.scalalogging.LazyLogging
+import io.undertow.security.api.AuthenticationMechanism.AuthenticationMechanismOutcome
 import io.undertow.server.{ HttpHandler, HttpServerExchange }
 import io.undertow.util.Methods._
 import io.undertow.util.{ Headers, StatusCodes }
-import org.apache.logging.log4j.scala.Logging
 import org.jmotor.concurrent.Executable
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -19,7 +20,7 @@ import scala.runtime.BoxedUnit
  *
  * @author AI
  */
-trait RestfulHandler extends HttpHandler with Executable with Logging {
+trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
 
   private[this] lazy val contentType = "application/json;charset=utf-8"
   private[this] implicit lazy val ec: ExecutionContext = ExecutionContext.fromExecutor(workers)
@@ -36,15 +37,7 @@ trait RestfulHandler extends HttpHandler with Executable with Logging {
       }
       executeSafely(
         authenticate(exchange).map {
-          case false ⇒
-            val (status, bytes) = authenticateFailureResponse(exchange)
-            exchange.setStatusCode(status)
-            if (bytes.nonEmpty) {
-              exchange.getResponseHeaders.put(Headers.CONTENT_TYPE, contentType)
-              exchange.getResponseSender.send(ByteBuffer.wrap(bytes))
-            }
-            exchange.endExchange()
-          case true ⇒
+          case AuthenticationMechanismOutcome.AUTHENTICATED ⇒
             executeSafely({
               val future = exchange.getRequestMethod match {
                 case GET    ⇒ get(exchange)
@@ -54,7 +47,7 @@ trait RestfulHandler extends HttpHandler with Executable with Logging {
                 case DELETE ⇒ delete(exchange)
               }
               future.map {
-                case Unit | _: BoxedUnit ⇒
+                case () | _: BoxedUnit ⇒
                   exchange.setStatusCode(StatusCodes.NO_CONTENT)
                   exchange.endExchange()
                 case result ⇒
@@ -63,6 +56,14 @@ trait RestfulHandler extends HttpHandler with Executable with Logging {
                   exchange.getResponseSender.send(ByteBuffer.wrap(writeAsBytes(result)))
               }
             }, exceptionCaught)
+          case outcome: AuthenticationMechanismOutcome ⇒
+            val (status, bytes) = authenticateFailureResponse(exchange, outcome)
+            exchange.setStatusCode(status)
+            if (bytes.nonEmpty) {
+              exchange.getResponseHeaders.put(Headers.CONTENT_TYPE, contentType)
+              exchange.getResponseSender.send(ByteBuffer.wrap(bytes))
+            }
+            exchange.endExchange()
         }, exceptionCaught)
     })
   }
@@ -79,11 +80,18 @@ trait RestfulHandler extends HttpHandler with Executable with Logging {
     }
   }
 
-  def authenticateFailureResponse(exchange: HttpServerExchange): (Int, Array[Byte]) = {
-    StatusCodes.FORBIDDEN -> Array.emptyByteArray
+  def authenticateFailureResponse(exchange: HttpServerExchange, outcome: AuthenticationMechanismOutcome): (Int, Array[Byte]) = {
+    val status = outcome match {
+      case AuthenticationMechanismOutcome.NOT_ATTEMPTED     ⇒ StatusCodes.FORBIDDEN
+      case AuthenticationMechanismOutcome.NOT_AUTHENTICATED ⇒ StatusCodes.UNAUTHORIZED
+      case AuthenticationMechanismOutcome.AUTHENTICATED     ⇒ throw new IllegalStateException("Request has authenticated")
+    }
+    status -> Array.emptyByteArray
   }
 
-  def authenticate(exchange: HttpServerExchange): Future[Boolean] = Future.successful(true)
+  def authenticate(exchange: HttpServerExchange): Future[AuthenticationMechanismOutcome] = {
+    Future.successful(AuthenticationMechanismOutcome.AUTHENTICATED)
+  }
 
   def get(exchange: HttpServerExchange): Future[Any] = Future.failed(new UnsupportedOperationException)
 
