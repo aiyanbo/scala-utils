@@ -21,6 +21,8 @@ dependencyUpgradeComponentSorter := ComponentSorter.ByAlphabetically
 
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
+releaseCrossBuild := true
+
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
