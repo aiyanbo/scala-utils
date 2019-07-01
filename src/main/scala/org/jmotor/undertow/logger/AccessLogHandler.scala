@@ -16,9 +16,10 @@ import io.undertow.util.HeaderValues
  *
  * @author AI
  */
-class AccessLogHandler(next: HttpHandler, service: Option[String] = None) extends HttpHandler {
+class AccessLogHandler(next: HttpHandler, service: Option[String]) extends HttpHandler {
 
   private[this] val logger: Logger = Logger("access")
+  private[this] lazy val serviceName = service.getOrElse("-")
   private[this] val listener: ExchangeCompletionListener =
     (exchange: HttpServerExchange, nextListener: ExchangeCompletionListener.NextListener) ⇒ {
       try {
@@ -55,11 +56,18 @@ class AccessLogHandler(next: HttpHandler, service: Option[String] = None) extend
     val ua = headers.getFirst(HttpHeaders.USER_AGENT)
     val now = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
     val referred = if (isEmpty(referer)) "-" else referer.getFirst
-    val sn = service.getOrElse("-")
     val address = exchange.getSourceAddress.getAddress.getHostAddress
-    s"""$address $sn $requestId - [$now] "$method $path $protocol" $status $bytesSent $cost "$referred" "$ua""""
+    s"""$address $serviceName $requestId - [$now] "$method $path $protocol" $status $bytesSent $cost "$referred" "$ua""""
   }
 
   private[this] def isEmpty(values: HeaderValues): Boolean = Objects.isNull(values) || values.isEmpty
+
+}
+
+object AccessLogHandler {
+
+  def apply(next: HttpHandler): AccessLogHandler = new AccessLogHandler(next, None)
+
+  def apply(next: HttpHandler, service: String): AccessLogHandler = new AccessLogHandler(next, Option(service))
 
 }

@@ -18,12 +18,18 @@ object Dependencies extends AutoPlugin {
     val scalatest = "3.0.8"
     val scalikejdbc = "3.3.5"
     val undertow = "2.0.22.Final"
+    val scalaI18n = "1.0.7"
+    val protobufJava = "3.8.0"
   }
 
   object Compiles {
-    val grpc: ModuleID = "io.grpc" % "grpc-core" % Versions.grpcCore
+    val protobuf: ModuleID = "com.google.protobuf" % "protobuf-java" % Versions.protobufJava
+    val grpc: Seq[ModuleID] = Seq(
+      "io.grpc" % "grpc-core" % Versions.grpcCore,
+      "io.grpc" % "grpc-stub" % Versions.grpcCore)
     val config: ModuleID = "com.typesafe" % "config" % Versions.config
     val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice
+    val i18n: ModuleID = "org.jmotor" %% "scala-i18n" % Versions.scalaI18n
     val undertow: ModuleID = "io.undertow" % "undertow-core" % Versions.undertow
     val scalikeJdbc: ModuleID = "org.scalikejdbc" %% "scalikejdbc" % Versions.scalikejdbc
     val logging: ModuleID = "com.typesafe.scala-logging" %% "scala-logging" % Versions.scalaLogging
@@ -35,7 +41,7 @@ object Dependencies extends AutoPlugin {
 
   import Compiles._
 
-  lazy val dependencies: Seq[ModuleID] = Seq(
-    logging, config, guice, grpc, undertow, scalikeJdbc).map(_ % Provided) :+ Tests.scalaTest
+  lazy val dependencies: Seq[ModuleID] = (grpc ++ Seq(
+    logging, config, i18n, guice, protobuf, undertow, scalikeJdbc)).map(_ % Provided) :+ Tests.scalaTest
 
 }
