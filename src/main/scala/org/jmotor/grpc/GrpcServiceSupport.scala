@@ -66,7 +66,11 @@ trait GrpcServiceSupport extends LazyLogging {
       case _                         ⇒ Status.INTERNAL -> t.getLocalizedMessage
     }
     observer.onError(status.withDescription(description).asRuntimeException())
-    observer.onCompleted()
+    try {
+      observer.onCompleted()
+    } catch {
+      case NonFatal(e) ⇒ logger.warn("StreamObserver.onError maybe closed: " + e.getLocalizedMessage)
+    }
   }
 
   private def extractLocale(request: MessageOrBuilder): Locale = {
