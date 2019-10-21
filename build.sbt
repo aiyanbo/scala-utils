@@ -8,9 +8,9 @@ organization := "org.jmotor"
 
 enablePlugins(Dependencies, Publishing)
 
-scalaVersion := Versions.scala213
+scalaVersion := Versions.scala
 
-crossScalaVersions := Seq(Versions.scala212, Versions.scala213)
+crossScalaVersions := Seq(Versions.scala212, Versions.scala)
 
 dependencyUpgradeModuleNames := Map(
   "scala-library" -> "scala",

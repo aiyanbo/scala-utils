@@ -8,18 +8,19 @@ object Dependencies extends AutoPlugin {
   override def projectSettings: Seq[Def.Setting[_]] = Seq(libraryDependencies ++= dependencies)
 
   object Versions {
-    val config = "1.3.4"
-    val grpcCore = "1.21.0"
+    val config = "1.4.0"
+    val grpcCore = "1.24.0"
+    val grpcStub = "1.24.0"
     val guava = "23.0"
     val guice = "4.2.2"
+    val protobufJava = "3.10.0"
+    val scala = "2.13.1"
     val scala212 = "2.12.8"
-    val scala213 = "2.13.0"
+    val scalaI18n = "1.0.7"
     val scalaLogging = "3.9.2"
     val scalatest = "3.0.8"
     val scalikejdbc = "3.3.5"
-    val undertow = "2.0.22.Final"
-    val scalaI18n = "1.0.7"
-    val protobufJava = "3.8.0"
+    val undertow = "2.0.27.Final"
   }
 
   object Compiles {
