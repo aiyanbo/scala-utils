@@ -1,6 +1,7 @@
 package org.jmotor.guice
 
-import com.google.inject.{ Guice, Injector }
+import com.google.inject.Guice
+import com.typesafe.config.ConfigFactory
 import org.jmotor.guice.service.PingService
 import org.scalatest.FunSuite
 
@@ -19,6 +20,15 @@ class ModuleSupportSpec extends FunSuite {
     })
     val service = injector.getInstance(classOf[PingService])
     assert(service.ping() == "pong")
+  }
+
+  test("Test bind extension") {
+    val config = ConfigFactory.parseString("extension.enabled = true")
+    val injector = Guice.createInjector(new AbstractModuleSupport {
+      override def configure(): Unit = bindExtendableComponents("org.jmotor.guice.service.impl", config)
+    })
+    val service = injector.getInstance(classOf[PingService])
+    assert(service.ping() == "extension pong")
   }
 
 }
