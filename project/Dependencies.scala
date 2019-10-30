@@ -14,7 +14,7 @@ object Dependencies extends AutoPlugin {
     val guava = "23.0"
     val guice = "4.2.2"
     val protobufJava = "3.10.0"
-    val scala = "2.13.1"
+    val scala = "2.13.0"
     val scala212 = "2.12.8"
     val scalaI18n = "1.0.7"
     val scalaLogging = "3.9.2"
