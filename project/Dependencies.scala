@@ -9,8 +9,8 @@ object Dependencies extends AutoPlugin {
 
   object Versions {
     val config = "1.4.0"
-    val grpcCore = "1.24.0"
-    val grpcStub = "1.24.0"
+    val grpcCore = "1.24.1"
+    val grpcStub = "1.24.1"
     val guava = "23.0"
     val guice = "4.2.2"
     val protobufJava = "3.10.0"
