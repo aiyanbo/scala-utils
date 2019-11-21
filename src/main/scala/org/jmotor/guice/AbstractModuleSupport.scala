@@ -6,6 +6,7 @@ import com.google.common.reflect.ClassPath
 import com.google.common.reflect.ClassPath.ClassInfo
 import com.google.inject.AbstractModule
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import org.jmotor.config.ConfigConversions._
 
 import scala.collection.JavaConverters._
@@ -18,7 +19,7 @@ import scala.collection.mutable
  *
  * @author AI
  */
-abstract class AbstractModuleSupport extends AbstractModule {
+abstract class AbstractModuleSupport extends AbstractModule with LazyLogging {
 
   private[this] final val CLASS_PATH = ClassPath.from(this.getClass.getClassLoader)
 
@@ -40,6 +41,7 @@ abstract class AbstractModuleSupport extends AbstractModule {
   def bindExtendableComponents(packageName: String, extensionPackage: String, enabled: Boolean): Unit = {
     val serviceClasses = mutable.Map[String, ClassInfo]()
     val packages = if (enabled) {
+      logger.info(s"Load extension package: $extensionPackage")
       Seq(packageName, extensionPackage)
     } else {
       Seq(packageName)
