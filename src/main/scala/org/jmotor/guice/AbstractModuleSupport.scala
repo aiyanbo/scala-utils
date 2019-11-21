@@ -21,7 +21,7 @@ import scala.collection.mutable
  */
 abstract class AbstractModuleSupport extends AbstractModule with LazyLogging {
 
-  private[this] final val CLASS_PATH = ClassPath.from(this.getClass.getClassLoader)
+  final val CLASS_PATH = ClassPath.from(this.getClass.getClassLoader)
 
   def bindComponents(packageName: String): Unit = {
     CLASS_PATH.getTopLevelClasses(packageName).asScala.foreach(bindComponent)
