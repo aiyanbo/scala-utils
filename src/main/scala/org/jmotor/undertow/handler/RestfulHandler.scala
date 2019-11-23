@@ -52,7 +52,7 @@ trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
                   exchange.endExchange()
                 case result ⇒
                   exchange.getResponseHeaders.put(Headers.CONTENT_TYPE, contentType)
-                  exchange.setStatusCode(getResponseStatusCode(exchange))
+                  exchange.setStatusCode(getResponseStatusCode(exchange, result))
                   exchange.getResponseSender.send(ByteBuffer.wrap(writeAsBytes(result)))
               }
             }, exceptionCaught)
@@ -69,6 +69,10 @@ trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
   }
 
   def writeAsBytes(result: Any): Array[Byte]
+
+  def getResponseStatusCode(exchange: HttpServerExchange, result: Any): Int = {
+    getResponseStatusCode(exchange)
+  }
 
   def getResponseStatusCode(exchange: HttpServerExchange): Int = {
     exchange.getRequestMethod match {
