@@ -1,5 +1,6 @@
+import sbt.Def
 import sbt.Keys.libraryDependencies
-import sbt.{ Def, _ }
+import sbt._
 
 object Dependencies extends AutoPlugin {
 
@@ -29,7 +30,9 @@ object Dependencies extends AutoPlugin {
       "io.grpc" % "grpc-core" % Versions.grpcCore,
       "io.grpc" % "grpc-stub" % Versions.grpcCore)
     val config: ModuleID = "com.typesafe" % "config" % Versions.config
-    val guice: ModuleID = "com.google.inject" % "guice" % Versions.guice
+    val guice: Seq[ModuleID] = Seq(
+      "com.google.inject" % "guice" % Versions.guice,
+      "com.google.inject.extensions" % "guice-multibindings" % Versions.guice)
     val i18n: ModuleID = "org.jmotor" %% "scala-i18n" % Versions.scalaI18n
     val undertow: ModuleID = "io.undertow" % "undertow-core" % Versions.undertow
     val scalikeJdbc: ModuleID = "org.scalikejdbc" %% "scalikejdbc" % Versions.scalikejdbc
@@ -42,7 +45,7 @@ object Dependencies extends AutoPlugin {
 
   import Compiles._
 
-  lazy val dependencies: Seq[ModuleID] = (grpc ++ Seq(
-    logging, config, i18n, guice, protobuf, undertow, scalikeJdbc)).map(_ % Provided) :+ Tests.scalaTest
+  lazy val dependencies: Seq[ModuleID] = (grpc ++ guice ++ Seq(
+    logging, config, i18n, protobuf, undertow, scalikeJdbc)).map(_ % Provided) :+ Tests.scalaTest
 
 }
