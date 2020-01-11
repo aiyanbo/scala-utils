@@ -1,9 +1,13 @@
 package org.jmotor.scalikejdbc
 
 import org.jmotor.concurrent.ExecutorLookup
-import scalikejdbc.{ ConnectionPool, DB, DBSession, using }
+import scalikejdbc.ConnectionPool
+import scalikejdbc.DB
+import scalikejdbc.DBSession
+import scalikejdbc.using
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 /**
  * Component:
@@ -14,8 +18,9 @@ import scala.concurrent.{ Future, ExecutionContext }
  */
 trait RepositorySupport {
 
-  private[this] lazy implicit val ec: ExecutionContext =
-    ExecutionContext.fromExecutor(ExecutorLookup.lookup("repositories-dispatcher"))
+  private[this] lazy implicit val ec: ExecutionContext = {
+    ExecutionContext.fromExecutor(ExecutorLookup.lookupByPartition("repositories-dispatcher", this))
+  }
 
   def readOnly[A](execution: DBSession ⇒ A)(implicit cp: ConnectionPool): Future[A] = {
     execute(execution, db ⇒ db.readOnly[A])
