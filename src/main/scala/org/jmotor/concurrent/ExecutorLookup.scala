@@ -51,7 +51,7 @@ object ExecutorLookup {
 
   }
 
-  def lookupByPartition(name: String, partitionKey: Any, partitionSize: Int = Runtime.getRuntime.availableProcessors()): Executor = {
+  def lookupByPartition(name: String, partitionKey: AnyRef, partitionSize: Int = Runtime.getRuntime.availableProcessors()): Executor = {
     val partition = Hashing.consistentHash(HashCode.fromInt(com.google.common.base.Objects.hashCode(partitionKey)), partitionSize)
     val executorName = s"$name-part-$partition"
     executors.get(executorName, () ⇒ {
