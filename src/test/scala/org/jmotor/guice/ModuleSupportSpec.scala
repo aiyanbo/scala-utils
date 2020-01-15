@@ -1,10 +1,16 @@
 package org.jmotor.guice
 
 import com.google.inject.Guice
+import com.google.inject.TypeLiteral
 import com.typesafe.config.ConfigFactory
+import org.jmotor.guice.service.Conf
+import org.jmotor.guice.service.ConfigService
+import org.jmotor.guice.service.MultiConfigService
 import org.jmotor.guice.service.MultiPingService
 import org.jmotor.guice.service.PingService
-import org.scalatest.FunSuite
+import org.jmotor.guice.service.impls.LongConfigService
+import org.jmotor.guice.service.impls.StringConfigService
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Component:
@@ -13,7 +19,7 @@ import org.scalatest.FunSuite
  *
  * @author AI
  */
-class ModuleSupportSpec extends FunSuite {
+class ModuleSupportSpec extends AnyFunSuite {
 
   test("Bind components") {
     val injector = Guice.createInjector(new AbstractModuleSupport {
@@ -32,13 +38,22 @@ class ModuleSupportSpec extends FunSuite {
     assert(service.ping() == "extension pong")
   }
 
-  test("Test bind s") {
+  test("Test bind multi") {
     val injector = Guice.createInjector(new AbstractMultiModuleSupport {
       override def configure(): Unit = bindMultiComponent[PingService]("org.jmotor.guice.service.impls")
     })
     val pings = injector.getInstance(classOf[MultiPingService]).pings
     assert(pings.contains("v1"))
     assert(pings.contains("v2"))
+  }
+
+  test("Test bind multi generic") {
+    val injector = Guice.createInjector(new AbstractMultiModuleSupport {
+      override def configure(): Unit = bindMultiComponent[ConfigService[Conf]](new TypeLiteral[ConfigService[Conf]]() {}, "org.jmotor.guice.service.impls")
+    })
+    val impls = injector.getInstance(classOf[MultiConfigService]).impls
+    assert(impls.exists(_.isInstanceOf[StringConfigService]))
+    assert(impls.exists(_.isInstanceOf[LongConfigService]))
   }
 
 }
