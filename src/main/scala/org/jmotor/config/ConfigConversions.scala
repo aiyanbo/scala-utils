@@ -3,9 +3,12 @@ package org.jmotor.config
 import com.typesafe.config.Config
 
 import scala.collection.JavaConverters._
-import scala.concurrent.duration.{ Duration, _ }
+import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 import scala.language.implicitConversions
-import scala.util.{ Failure, Success, Try }
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 /**
  * Component:
@@ -17,6 +20,15 @@ import scala.util.{ Failure, Success, Try }
 object ConfigConversions {
 
   implicit class ConfigWrapper(config: Config) {
+
+    implicit def getSubConfigNames(path: String): Set[String] = {
+      getConfigOpt(path).fold(Set.empty[String]) { subConfig ⇒
+        val delimiter: Char = '.'
+        subConfig.entrySet().asScala.collect {
+          case entry if entry.getKey.indexOf(delimiter) > 0 ⇒ entry.getKey.split(delimiter).head
+        }.toSet
+      }
+    }
 
     implicit def getIntOpt(path: String): Option[Int] = getOpt(config.getInt(path))
 

@@ -1,8 +1,8 @@
 package org.jmotor.config
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.FunSuite
 import org.jmotor.config.ConfigConversions._
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Component:
@@ -11,7 +11,7 @@ import org.jmotor.config.ConfigConversions._
  *
  * @author AI
  */
-class ConfigConversionsSpec extends FunSuite {
+class ConfigConversionsSpec extends AnyFunSuite {
 
   private[this] final val config = ConfigFactory.parseString(
     s"""
@@ -19,6 +19,17 @@ class ConfigConversionsSpec extends FunSuite {
        |age = 18
        |valid = true
        |nums = [1,2,3,4]
+       |
+       |clients {
+       |  timeout = 1
+       |  http {
+       |    address = "0.0.0.0"
+       |  }
+       |
+       |  grpc {
+       |    address = "0.0.0.0"
+       |  }
+       |}
      """.stripMargin)
 
   test("Get long configs") {
@@ -37,6 +48,14 @@ class ConfigConversionsSpec extends FunSuite {
   test("Get int seq opt") {
     assert(config.getIntSeqOpt("nums2").isEmpty)
     assert(config.getIntSeqOpt("nums").exists(_.forall(_ < 5)))
+  }
+
+  test("Get sub config names") {
+    val names = config.getSubConfigNames("clients")
+    assert(names.size == 2)
+    Seq("http", "grpc").foreach { name ⇒
+      assert(names.contains(name))
+    }
   }
 
 }
