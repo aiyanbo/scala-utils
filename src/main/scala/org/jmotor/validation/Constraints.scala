@@ -35,7 +35,7 @@ object Constraints {
     }
   }
 
-  def notEmpty(field: String, values: Traversable[_]): Unit = {
+  def notEmpty(field: String, values: Iterable[_]): Unit = {
     check(ConstraintViolation(field, NotEmpty)) {
       assert(values.nonEmpty)
     }
@@ -55,7 +55,7 @@ object Constraints {
     }
   }
 
-  def minLength(field: String, values: Traversable[_], length: Int): Unit = {
+  def minLength(field: String, values: Iterable[_], length: Int): Unit = {
     check(ConstraintViolation(field, MinLength, length)) {
       assert(values.size >= length)
     }
@@ -67,7 +67,7 @@ object Constraints {
     }
   }
 
-  def maxLength(field: String, values: Traversable[_], length: Int): Unit = {
+  def maxLength(field: String, values: Iterable[_], length: Int): Unit = {
     check(ConstraintViolation(field, MaxLength, length)) {
       assert(values.size <= length)
     }

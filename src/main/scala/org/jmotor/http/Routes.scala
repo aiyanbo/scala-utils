@@ -5,7 +5,7 @@ import java.nio.file.Paths
 import com.google.common.reflect.{ ClassPath, TypeToken }
 import com.google.inject.Injector
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  * Component:

@@ -3,7 +3,7 @@ package org.jmotor.guice.service
 import javax.inject.Inject
 import javax.inject.Singleton
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  *

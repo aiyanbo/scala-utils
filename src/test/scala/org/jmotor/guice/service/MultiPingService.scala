@@ -2,7 +2,7 @@ package org.jmotor.guice.service
 
 import javax.inject.Inject
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
  *

@@ -2,7 +2,7 @@ package org.jmotor.config
 
 import com.typesafe.config.Config
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration._
 import scala.language.implicitConversions

@@ -4,7 +4,7 @@ import com.google.common.reflect.TypeToken
 import com.google.inject.TypeLiteral
 import com.google.inject.multibindings.Multibinder
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.reflect._
 
 /**
