@@ -3,6 +3,7 @@ package org.jmotor.config
 import com.typesafe.config.ConfigFactory
 import org.jmotor.config.ConfigConversions._
 import org.scalatest.funsuite.AnyFunSuite
+import scala.concurrent.duration._
 
 /**
  * Component:
@@ -18,7 +19,11 @@ class ConfigConversionsSpec extends AnyFunSuite {
        |name = "Andy Ai"
        |age = 18
        |valid = true
-       |nums = [1,2,3,4]
+       |ints = [1,2,3,4]
+       |longs = [1,2,3,4]
+       |doubles = [0.1,0.2,0.3,0.4]
+       |strings = ["a","b"]
+       |timeout = 1 seconds
        |
        |clients {
        |  timeout = 1
@@ -32,11 +37,15 @@ class ConfigConversionsSpec extends AnyFunSuite {
        |}
      """.stripMargin)
 
-  test("Get long configs") {
+  test("Get value opt") {
     val addressOpt = config.getStringOpt("address")
     assert(addressOpt.isEmpty)
     val ageOpt = config.getIntOpt("age")
     assert(ageOpt.contains(18))
+    assert(config.getLongOpt("age1").isEmpty)
+    assert(config.getDoubleOpt("age2").isEmpty)
+    assert(config.getDurationOpt("timeout1").isEmpty)
+    assert(config.getDurationOpt("timeout").contains(1.seconds))
   }
 
   test("Get boolean opt") {
@@ -45,9 +54,17 @@ class ConfigConversionsSpec extends AnyFunSuite {
     assert(config.getBooleanOpt("valid").contains(true))
   }
 
-  test("Get int seq opt") {
-    assert(config.getIntSeqOpt("nums2").isEmpty)
-    assert(config.getIntSeqOpt("nums").exists(_.forall(_ < 5)))
+  test("Get value seq opt") {
+    assert(config.getIntSeqOpt("ints2").isEmpty)
+    assert(config.getIntSeqOpt("ints").exists(_.forall(_ < 5)))
+    assert(config.getLongSeqOpt("longs2").isEmpty)
+    assert(config.getLongSeqOpt("longs").exists(_.forall(_ < 5)))
+    assert(config.getDoubleSeqOpt("doubles2").isEmpty)
+    assert(config.getDoubleSeqOpt("doubles").exists(_.forall(_ < 0.5)))
+    assert(config.getStringSeqOpt("strings2").isEmpty)
+    config.getStringSeqOpt("strings").get.foreach { value ⇒
+      assert(Set("a", "b").contains(value))
+    }
   }
 
   test("Get sub config names") {

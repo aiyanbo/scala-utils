@@ -1,15 +1,17 @@
 package org.jmotor.validation
 
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-import scala.util.{ Failure, Try }
+import scala.util.Failure
+import scala.util.Try
 
 /**
  *
  * @author AI
  *         2019-03-11
  */
-class ConstraintsSpec extends FlatSpec with Matchers {
+class ConstraintsSpec extends AnyFlatSpec with Matchers {
 
   "notBlank" should "throw exception when value is blank" in {
     val result = Try(Constraints.notBlank("name", ""))
@@ -24,6 +26,8 @@ class ConstraintsSpec extends FlatSpec with Matchers {
   "notEmpty" should "check ok and bad" in {
     Try(Constraints.notEmpty("ids", Seq.empty)).isFailure shouldBe true
     Try(Constraints.notEmpty("ids", Seq("1"))).isSuccess shouldBe true
+    Try(Constraints.notEmpty("value", "value")).isSuccess shouldBe true
+    Try(Constraints.notEmpty("value", null)).isFailure shouldBe true
   }
 
   "matchValues" should "check ok and bad" in {
