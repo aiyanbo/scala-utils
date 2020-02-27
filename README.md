@@ -9,5 +9,5 @@
 ## Usage
 
 ```
-"org.jmotor" %% "scala-utils" % "1.0.14"
+"org.jmotor" %% "scala-utils" % "$VERSION"
 ```
