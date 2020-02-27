@@ -2,7 +2,8 @@ package org.jmotor.http
 
 import java.nio.file.Paths
 
-import com.google.common.reflect.{ ClassPath, TypeToken }
+import com.google.common.reflect.ClassPath
+import com.google.common.reflect.TypeToken
 import com.google.inject.Injector
 
 import scala.jdk.CollectionConverters._
@@ -16,8 +17,17 @@ import scala.jdk.CollectionConverters._
  */
 object Routes {
 
+  @scala.deprecated("using org.jmotor.http.Routes.loadRoutingHandlers", "1.0.15")
   def getRoutingHandlers(injector: Injector, packageName: String): Set[RoutingHandler] = {
-    val classPath = ClassPath.from(this.getClass.getClassLoader)
+    loadRoutingHandlers(this.getClass.getClassLoader, injector, packageName)
+  }
+
+  def loadRoutingHandlers(injector: Injector, packageName: String): Set[RoutingHandler] = {
+    loadRoutingHandlers(this.getClass.getClassLoader, injector, packageName)
+  }
+
+  def loadRoutingHandlers(loader: ClassLoader, injector: Injector, packageName: String): Set[RoutingHandler] = {
+    val classPath = ClassPath.from(loader)
     val routingHandlerClazz: Class[RoutingHandler] = classOf[RoutingHandler]
     val classes = classPath.getTopLevelClassesRecursive(packageName).asScala
     classes.map(_.load()).filter { clazz ⇒
@@ -35,10 +45,14 @@ object Routes {
 
   def getRegexRoutes(handlers: Set[RoutingHandler], versioning: Option[String] = None): Set[String] = {
     handlers.map { routing ⇒
-      val pattern = routing.pattern.getOrElse(routing.route)
-      val router = versioning.fold(pattern)(version ⇒ Paths.get("/", version, pattern).toString)
-      router.replaceAll("\\{\\w+\\}", """([\\\\w|-]+)""")
+      getRegexRoute(routing, versioning)
     }
+  }
+
+  def getRegexRoute(routing: RoutingHandler, versioning: Option[String] = None): String = {
+    val pattern = routing.pattern.getOrElse(routing.route)
+    val router = versioning.fold(pattern)(version ⇒ Paths.get("/", version, pattern).toString)
+    router.replaceAll("\\{\\w+\\}", """([\\\\w|-]+)""")
   }
 
 }

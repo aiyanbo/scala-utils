@@ -1,6 +1,7 @@
 package org.jmotor.grpc
 
-import com.google.common.reflect.{ ClassPath, TypeToken }
+import com.google.common.reflect.ClassPath
+import com.google.common.reflect.TypeToken
 import com.google.inject.Injector
 import io.grpc.BindableService
 
@@ -15,8 +16,17 @@ import scala.jdk.CollectionConverters._
  */
 object Services {
 
+  @scala.deprecated("using org.jmotor.grpc.Services.loadGrpcServices", "1.0.15")
   def getGrpcServices(injector: Injector, packageName: String): Set[BindableService] = {
-    val classPath = ClassPath.from(this.getClass.getClassLoader)
+    loadGrpcServices(injector, packageName)
+  }
+
+  def loadGrpcServices(injector: Injector, packageName: String): Set[BindableService] = {
+    loadGrpcServices(this.getClass.getClassLoader, injector, packageName)
+  }
+
+  def loadGrpcServices(loader: ClassLoader, injector: Injector, packageName: String): Set[BindableService] = {
+    val classPath = ClassPath.from(loader)
     val serviceClazz: Class[BindableService] = classOf[BindableService]
     val classes = classPath.getTopLevelClassesRecursive(packageName).asScala
     classes.map(_.load()).filter { clazz ⇒
