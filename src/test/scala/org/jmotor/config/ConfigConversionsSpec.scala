@@ -3,6 +3,7 @@ package org.jmotor.config
 import com.typesafe.config.ConfigFactory
 import org.jmotor.config.ConfigConversions._
 import org.scalatest.funsuite.AnyFunSuite
+
 import scala.concurrent.duration._
 
 /**
@@ -35,7 +36,13 @@ class ConfigConversionsSpec extends AnyFunSuite {
        |    address = "0.0.0.0"
        |  }
        |}
-     """.stripMargin)
+       |
+       |module.enabled += "a"
+       |module.enabled += "b"
+       |module.enabled += "c"
+       |module.disabled += "a"
+       |project.enabled += "1"
+     """.stripMargin).resolve()
 
   test("Get value opt") {
     val addressOpt = config.getStringOpt("address")
@@ -73,6 +80,17 @@ class ConfigConversionsSpec extends AnyFunSuite {
     Seq("http", "grpc").foreach { name ⇒
       assert(names.contains(name))
     }
+  }
+
+  test("Get enables") {
+    val enables = config.getEnabledValues("module.enabled", "module.disabled")
+    Seq("b", "c").foreach { v ⇒
+      assert(enables.contains(v))
+    }
+    assert(!enables.contains("a"))
+    val projects = config.getEnabledValues("project.enabled", "project.disabled")
+    assert(projects.size == 1)
+    assert(projects.head == "1")
   }
 
 }

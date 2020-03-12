@@ -2,9 +2,9 @@ package org.jmotor.config
 
 import com.typesafe.config.Config
 
-import scala.jdk.CollectionConverters._
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.language.implicitConversions
 import scala.util.Failure
 import scala.util.Success
@@ -27,6 +27,15 @@ object ConfigConversions {
         subConfig.entrySet().asScala.collect {
           case entry if entry.getKey.indexOf(delimiter) > 0 ⇒ entry.getKey.split(delimiter).head
         }.toSet
+      }
+    }
+
+    implicit def getEnabledValues(enabledPath: String, disabledPath: String): Seq[String] = {
+      val enables = config.getStringList(enabledPath).asScala.distinct.toSeq
+      val disablesOpt = config.getStringSeqOpt(disabledPath)
+      disablesOpt match {
+        case None           ⇒ enables
+        case Some(disables) ⇒ enables.filterNot(disables.contains)
       }
     }
 
