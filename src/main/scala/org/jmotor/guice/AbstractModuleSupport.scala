@@ -29,12 +29,12 @@ abstract class AbstractModuleSupport extends AbstractModule with LazyLogging {
 
   def bindExtendableComponents(packageName: String, config: Config): Unit = {
     val extensionPackage = packageName.substring(0, packageName.lastIndexOf('.')) + ".extension"
-    val enabled: Boolean = config.getBooleanOpt("extension.enabled").getOrElse(false)
+    val enabled: Boolean = extensionEnabled(config)
     bindExtendableComponents(packageName, extensionPackage, enabled)
   }
 
   def bindExtendableComponents(packageName: String, extensionPackage: String, config: Config): Unit = {
-    val enabled: Boolean = config.getBooleanOpt("extension.enabled").getOrElse(false)
+    val enabled: Boolean = extensionEnabled(config)
     bindExtendableComponents(packageName, extensionPackage, enabled)
   }
 
@@ -68,5 +68,7 @@ abstract class AbstractModuleSupport extends AbstractModule with LazyLogging {
       bind(interfaceOpt.get.asInstanceOf[Class[Any]]).to(clazz.asInstanceOf[Class[Any]])
     }
   }
+
+  def extensionEnabled(config: Config): Boolean = config.getBooleanOpt("extension.enabled").getOrElse(false)
 
 }

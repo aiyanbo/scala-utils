@@ -38,6 +38,15 @@ class ModuleSupportSpec extends AnyFunSuite {
     assert(service.ping() == "extension pong")
   }
 
+  test("Test bind extension package") {
+    val config = ConfigFactory.parseString("extension.enabled = true")
+    val injector = Guice.createInjector(new AbstractModuleSupport {
+      override def configure(): Unit = bindExtendableComponents("org.jmotor.guice.service.impl", "org.jmotor.guice.service.v2", config)
+    })
+    val service = injector.getInstance(classOf[PingService])
+    assert(service.ping() == "extension pong v2")
+  }
+
   test("Test bind multi") {
     val injector = Guice.createInjector(new AbstractMultiModuleSupport {
       override def configure(): Unit = bindMultiComponent[PingService]("org.jmotor.guice.service.impls")
