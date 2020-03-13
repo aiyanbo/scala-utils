@@ -31,11 +31,14 @@ object ConfigConversions {
     }
 
     implicit def getEnabledValues(enabledPath: String, disabledPath: String): Seq[String] = {
-      val enables = config.getStringList(enabledPath).asScala.distinct.toSeq
-      val disablesOpt = config.getStringSeqOpt(disabledPath)
-      disablesOpt match {
-        case None           ⇒ enables
-        case Some(disables) ⇒ enables.filterNot(disables.contains)
+      config.getStringSeqOpt(enabledPath).map(_.distinct) match {
+        case None ⇒ Seq.empty
+        case Some(enables) ⇒
+          val disablesOpt = config.getStringSeqOpt(disabledPath)
+          disablesOpt match {
+            case None           ⇒ enables
+            case Some(disables) ⇒ enables.filterNot(disables.contains)
+          }
       }
     }
 

@@ -91,6 +91,8 @@ class ConfigConversionsSpec extends AnyFunSuite {
     val projects = config.getEnabledValues("project.enabled", "project.disabled")
     assert(projects.size == 1)
     assert(projects.head == "1")
+    val nodes = config.getEnabledValues("nodes", "node.disabled")
+    assert(nodes.isEmpty)
   }
 
 }
