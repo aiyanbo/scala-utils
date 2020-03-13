@@ -7,8 +7,7 @@ jdk:
   - openjdk11
 
 script:
-  - sbt +test
-  - sbt clean coverage coverageReport
+  - sbt clean coverage +test coverageReport
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
