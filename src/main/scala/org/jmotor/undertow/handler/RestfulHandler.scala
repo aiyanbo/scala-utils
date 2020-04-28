@@ -1,16 +1,20 @@
 package org.jmotor.undertow.handler
 
 import java.nio.ByteBuffer
-import java.util.concurrent.{ Executor, Executors }
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 import com.typesafe.scalalogging.LazyLogging
 import io.undertow.security.api.AuthenticationMechanism.AuthenticationMechanismOutcome
-import io.undertow.server.{ HttpHandler, HttpServerExchange }
+import io.undertow.server.HttpHandler
+import io.undertow.server.HttpServerExchange
 import io.undertow.util.Methods._
-import io.undertow.util.{ Headers, StatusCodes }
+import io.undertow.util.Headers
+import io.undertow.util.StatusCodes
 import org.jmotor.concurrent.Executable
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.runtime.BoxedUnit
 
 /**
@@ -22,7 +26,7 @@ import scala.runtime.BoxedUnit
  */
 trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
 
-  private[this] lazy val contentType = "application/json;charset=utf-8"
+  protected lazy val contentType: String = ContentTypes.APPLICATION_JSON
   private[this] implicit lazy val ec: ExecutionContext = ExecutionContext.fromExecutor(workers)
   protected lazy val workers: Executor = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
 
