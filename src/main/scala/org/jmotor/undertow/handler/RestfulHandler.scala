@@ -8,8 +8,8 @@ import com.typesafe.scalalogging.LazyLogging
 import io.undertow.security.api.AuthenticationMechanism.AuthenticationMechanismOutcome
 import io.undertow.server.HttpHandler
 import io.undertow.server.HttpServerExchange
-import io.undertow.util.Methods._
 import io.undertow.util.Headers
+import io.undertow.util.Methods._
 import io.undertow.util.StatusCodes
 import org.jmotor.concurrent.Executable
 
@@ -26,7 +26,6 @@ import scala.runtime.BoxedUnit
  */
 trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
 
-  protected lazy val contentType: String = ContentTypes.APPLICATION_JSON
   private[this] implicit lazy val ec: ExecutionContext = ExecutionContext.fromExecutor(workers)
   protected lazy val workers: Executor = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
 
@@ -55,6 +54,7 @@ trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
                   exchange.setStatusCode(StatusCodes.NO_CONTENT)
                   exchange.endExchange()
                 case result ⇒
+                  val contentType = getResponseContentType(exchange)
                   exchange.getResponseHeaders.put(Headers.CONTENT_TYPE, contentType)
                   exchange.setStatusCode(getResponseStatusCode(exchange, result))
                   exchange.getResponseSender.send(ByteBuffer.wrap(writeAsBytes(result)))
@@ -64,6 +64,7 @@ trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
             val (status, bytes) = authenticateFailureResponse(exchange, outcome)
             exchange.setStatusCode(status)
             if (bytes.nonEmpty) {
+              val contentType = getResponseContentType(exchange)
               exchange.getResponseHeaders.put(Headers.CONTENT_TYPE, contentType)
               exchange.getResponseSender.send(ByteBuffer.wrap(bytes))
             }
@@ -74,9 +75,9 @@ trait RestfulHandler extends HttpHandler with Executable with LazyLogging {
 
   def writeAsBytes(result: Any): Array[Byte]
 
-  def getResponseStatusCode(exchange: HttpServerExchange, result: Any): Int = {
-    getResponseStatusCode(exchange)
-  }
+  @inline def getResponseStatusCode(exchange: HttpServerExchange, result: Any): Int = getResponseStatusCode(exchange)
+
+  @inline def getResponseContentType(exchange: HttpServerExchange): String = ContentTypes.APPLICATION_JSON
 
   def getResponseStatusCode(exchange: HttpServerExchange): Int = {
     exchange.getRequestMethod match {
