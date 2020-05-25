@@ -5,6 +5,7 @@ import com.google.inject.TypeLiteral
 import com.typesafe.config.ConfigFactory
 import org.jmotor.guice.service.Conf
 import org.jmotor.guice.service.ConfigService
+import org.jmotor.guice.service.FooService
 import org.jmotor.guice.service.MultiConfigService
 import org.jmotor.guice.service.MultiPingService
 import org.jmotor.guice.service.PingService
@@ -63,6 +64,16 @@ class ModuleSupportSpec extends AnyFunSuite {
     val impls = injector.getInstance(classOf[MultiConfigService]).impls
     assert(impls.exists(_.isInstanceOf[StringConfigService]))
     assert(impls.exists(_.isInstanceOf[LongConfigService]))
+  }
+
+  test("Test extends extension") {
+    val config = ConfigFactory.parseString("extension.enabled = true")
+    val injector = Guice.createInjector(new AbstractModuleSupport {
+      override def configure(): Unit = bindExtendableComponents("org.jmotor.guice.service.impl", config)
+    })
+    val service = injector.getInstance(classOf[FooService])
+    assert("run" == service.run())
+    assert("invoke" == service.call())
   }
 
 }

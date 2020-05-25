@@ -9,8 +9,8 @@ import com.typesafe.config.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.jmotor.config.ConfigConversions._
 
-import scala.jdk.CollectionConverters._
 import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 
 /**
  * Component:
@@ -60,7 +60,12 @@ abstract class AbstractModuleSupport extends AbstractModule with LazyLogging {
 
   def bindComponent(classInfo: ClassPath.ClassInfo): Unit = {
     val clazz = classInfo.load()
-    val interfaces = clazz.getInterfaces
+    val clazzInterfaces = clazz.getInterfaces
+    val interfaces = if (clazzInterfaces.nonEmpty) {
+      clazzInterfaces
+    } else {
+      clazz.getSuperclass.getInterfaces
+    }
     val interfaceOpt = interfaces.find { irfe ⇒
       clazz.getSimpleName.contains(irfe.getSimpleName) && clazz.getPackage.getName.contains(irfe.getPackage.getName)
     }
