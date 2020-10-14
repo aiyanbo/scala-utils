@@ -18,7 +18,7 @@ object Dependencies extends AutoPlugin {
     val protobufJava = "3.12.1"
     val scala = "2.13.2"
     val scala212 = "2.12.10"
-    val scalaI18n = "1.0.7"
+    val scalaI18n = "1.0.8"
     val scalaLogging = "3.9.2"
     val scalatest = "3.1.2"
     val scalikejdbc = "3.4.2"
