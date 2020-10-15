@@ -1,6 +1,6 @@
 package org.jmotor.utils
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Component:
@@ -9,7 +9,7 @@ import org.scalatest.FunSuite
  *
  * @author AI
  */
-class StringsSpec extends FunSuite {
+class StringsSpec extends AnyFunSuite {
 
   test("Avoid blank") {
     assert(Strings.avoidBlank(Option("  ")).isEmpty)

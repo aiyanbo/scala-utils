@@ -10,19 +10,19 @@ object Dependencies extends AutoPlugin {
 
   object Versions {
     val config = "1.4.0"
-    val grpcCore = "1.29.0"
-    val grpcStub = "1.29.0"
+    val grpcCore = "1.32.2"
+    val grpcStub = "1.32.2"
     val guava = "23.0"
     val guice = "4.2.3"
     val guiceMultibindings = "4.2.3"
-    val protobufJava = "3.12.1"
-    val scala = "2.13.2"
+    val protobufJava = "3.13.0"
+    val scala = "2.13.3"
     val scala212 = "2.12.10"
     val scalaI18n = "1.0.8"
     val scalaLogging = "3.9.2"
-    val scalatest = "3.1.2"
-    val scalikejdbc = "3.4.2"
-    val undertow = "2.1.1.Final"
+    val scalatest = "3.2.2"
+    val scalikejdbc = "3.5.0"
+    val undertow = "2.2.2.Final"
   }
 
   object Compiles {

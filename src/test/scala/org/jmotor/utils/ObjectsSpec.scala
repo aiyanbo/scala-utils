@@ -1,6 +1,6 @@
 package org.jmotor.utils
 
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Component:
@@ -9,7 +9,7 @@ import org.scalatest.FunSuite
  *
  * @author AI
  */
-class ObjectsSpec extends FunSuite {
+class ObjectsSpec extends AnyFunSuite {
 
   test("Get properties") {
     val properties = Objects.properties(Foo("bar", "foo"))

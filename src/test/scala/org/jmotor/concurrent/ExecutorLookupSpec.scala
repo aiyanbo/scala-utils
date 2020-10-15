@@ -1,14 +1,14 @@
 package org.jmotor.concurrent
 
 import com.typesafe.config.ConfigFactory
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  *
  * @author AI
  *         2020/1/11
  */
-class ExecutorLookupSpec extends FunSuite {
+class ExecutorLookupSpec extends AnyFunSuite {
 
   test("lookup by partition") {
     val name = "repositories-dispatcher"

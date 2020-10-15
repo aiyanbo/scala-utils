@@ -19,6 +19,17 @@ dependencyUpgradeModuleNames := Map(
 
 dependencyUpgradeComponentSorter := ComponentSorter.ByAlphabetically
 
+lazy val utf8: String = "UTF-8"
+lazy val javaVersion: String = "1.8"
+
+Compile / compile / javacOptions ++= Seq(
+  "-source", javaVersion, "-target", javaVersion, "-encoding", utf8, "-deprecation"
+)
+
+Compile / doc / javacOptions ++= Seq(
+  "-linksource", "-source", javaVersion, "-docencoding", utf8, "-charset", utf8, "-encoding", utf8, "-nodeprecated"
+)
+
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 releaseCrossBuild := true

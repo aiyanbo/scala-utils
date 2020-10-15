@@ -3,7 +3,7 @@ package org.jmotor.http
 import com.google.inject.Guice
 import org.jmotor.guice.AbstractModuleSupport
 import org.jmotor.http.router.{ ArgumentRouter, PatternRouter, PingRouter }
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * Component:
@@ -12,7 +12,7 @@ import org.scalatest.FunSuite
  *
  * @author AI
  */
-class RoutesSpec extends FunSuite {
+class RoutesSpec extends AnyFunSuite {
 
   test("load handlers") {
     val injector = Guice.createInjector(new AbstractModuleSupport {
